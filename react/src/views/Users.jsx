@@ -2,12 +2,18 @@ import {useEffect, useState} from "react";
 import axiosClient from "../axios-client.js";
 import {Link} from "react-router-dom";
 import {useStateContext} from "../context/ContextProvider.jsx";
+import {Pagination} from 'react-laravel-paginex';
+import styled  from 'styled-components';
 
 export default function Users() {
   const [users, setUsers] = useState([]);
+  const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(false);
   const {setNotification} = useStateContext()
 
+  const PaginationWrapper = styled.div `
+    display: flex;
+  `
   useEffect(() => {
     getUsers();
   }, [])
@@ -23,18 +29,25 @@ export default function Users() {
       })
   }
 
-  const getUsers = () => {
+  const getUsers = (data= {}) => {
+    const page = data?.page || 1
     setLoading(true)
-    axiosClient.get('/users')
-      .then(({ data }) => {
-        setLoading(false)
-        setUsers(data.data)
-      })
-      .catch(() => {
-        setLoading(false)
-      })
+    axiosClient.get('/users?page=' + page )
+    .then((response) => {
+          setUsers(response.data.data)
+          setPagination({
+            current_page: response.data?.meta.current_page,
+            last_page: response.data?.meta.last_page,
+            total: response.data?.meta.total,
+            next_page_url: response.data?.links?.next,
+            prev_page_url: response.data?.links?.previous 
+          })
+          setLoading(false)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
   }
-
   return (
     <div>
       <div style={{display: 'flex', justifyContent: "space-between", alignItems: "center"}}>
@@ -63,6 +76,7 @@ export default function Users() {
           }
           {!loading &&
             <tbody>
+              {/* {typeof {users}} */}
             {users.map(u => (
               <tr key={u.id}>
                 <td>{u.id}</td>
@@ -76,6 +90,9 @@ export default function Users() {
                 </td>
               </tr>
             ))}
+            <PaginationWrapper>
+              {users.length > 0 && <Pagination changePage={getUsers} data={pagination} />}
+            </PaginationWrapper>
             </tbody>
           }
         </table>

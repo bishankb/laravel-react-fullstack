@@ -28,26 +28,10 @@ export default function Users() {
       })
   }
 
-  // const getUsers = (data) => {
-  //   setLoading(true)
-  //   // axiosClient.get('/users')
-  //   axiosClient.get('/users?page=' + data.page)
-  //     .then(({ data }) => {
-  //       console.log('data',data)
-  //       setLoading(false)
-  //       setUsers(data.data)
-  //     })
-  //     .catch(() => {
-  //       setLoading(false)
-  //     })
-  // }
-
   const getUsers = (data) => {
     setLoading(true)
     axiosClient.get('/users')
-    axiosClient.get('/users?page=' + data.page)
       .then(({ data }) => {
-       
         setLoading(false)
         setUsers(data.data)
       })
@@ -55,22 +39,6 @@ export default function Users() {
         setLoading(false)
       })
   }
-
-  // const getUsers = (data) => {
-  //   setLoading(true)
-  //   // axiosClient.get('/users')
-  //   axiosClient.get('/users?page=' + data.page)
-  //     .then((response) => {
-  //       console.log('data',response.data)
-  //       setLoading(false)
-  //       setUsers(response.data.data)
-  //       return {...response.data.links,...response.data.meta}
-  //     })
-  //     .catch(() => {
-  //       setLoading(false)
-  //     })
-  // }
-
 
   return (
     <div>
@@ -116,18 +84,6 @@ export default function Users() {
             </tbody>
           }
         </table>
-
-        <Pagination changePage="getUsers" data="data"/>
-        {/* <Pagination>
-          <Pagination.First />{ users }
-          <Pagination.Prev />
-          <Pagination.Item active >{1}</Pagination.Item>
-          <Pagination.Item>{2}</Pagination.Item>
-          <Pagination.Item>{3}</Pagination.Item>
-          <Pagination.Item>{4}</Pagination.Item>
-          <Pagination.Next />
-          <Pagination.Last />
-        </Pagination> */}
       </div>
     </div>
   )
